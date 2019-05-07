@@ -2,26 +2,10 @@ import numpy as np
 import tensorflow as tf
 
 from gtrain import FCNet, gtrain
-from gtrain.data import generate_test_data, AllData
+from gtrain.data import AllData
 
 np.random.seed(555)
 tf.set_random_seed(555)
-
-layer_input_sizes = 2
-num_of_samples = 1000
-num_of_classes = 3
-data_tr, l_tr, data_val, l_val = generate_test_data()
-
-# initialization of weights
-inner_dimensions = [layer_input_sizes, 3,  num_of_classes]
-
-train_net = FCNet(inner_dimensions, use_cross_entropy=False)
-data = AllData(data_tr, l_tr, data_val, l_val)
-gtrain(train_net, data, lr=0.01, lr_dec=1.0, lr_inc=1.0, use_nesterow=True, num_steps=1000, evaluate_every=20, checkpoint_every=20, num_checkpoints=5, mu=0.9)
-
-
-
-
 
 
 def generate_test_data(num_of_train_samples=1000, num_of_validation_samples=100):
@@ -44,3 +28,16 @@ def generate_test_data(num_of_train_samples=1000, num_of_validation_samples=100)
     for i in range(len(l_val)):
         l_val[i][sample_class(data_val[i])] = 1
     return data_tr, l_tr, data_val, l_val
+
+layer_input_sizes = 2
+num_of_samples = 1000
+num_of_classes = 3
+data_tr, l_tr, data_val, l_val = generate_test_data(num_of_samples, num_of_classes)
+
+# initialization of weights
+inner_dimensions = [layer_input_sizes, 3,  num_of_classes]
+
+train_net = FCNet(inner_dimensions, use_cross_entropy=False)
+data = AllData(data_tr, l_tr, data_val, l_val)
+gtrain(train_net, data, num_steps=10000, evaluate_every=1000, checkpoint_every=1000, num_checkpoints=5)
+

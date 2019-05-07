@@ -4,7 +4,7 @@ import scipy.stats as stats
 
 def compere_classifiers(measure_list, names_list, base_classifier=None, level=0.05):
     """
-    Compute the statistic significancy of the classifiers and prints the results to the stdout
+    Compute the statistic significance of the classifiers and prints the results to the stdout
     Procedure is described in an article - Statistical Comparisons of Classifiers over Multiple Data Sets
     Reference:
         @article{demvsar2006statistical,

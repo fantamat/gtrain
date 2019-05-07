@@ -14,29 +14,17 @@ class Data(ABC):
         """
         self.placeholders = pl_list
 
-    def get_next_batch(self):
+    def get_batches(self):
         """
-        :return: next batch of the data as a dictionary that feeds method Session.run
-        """
-        pass
-
-    def accumulate_grad(self):
-        """
-        If the True is returned then the learning procedure accumulates gradient and other measures
-        :return: a bool value
+        :return: a generator of all batches of the validation data that are accumulated
+            as a dictionary that feeds method Session.run
         """
         pass
 
-    def accumulate_dev(self):
+    def get_dev_batches(self):
         """
-        If the True is returned then the learning procedure accumulates gradient and other measures
-        :return: a bool value
-        """
-        return self.accumulate_grad()
-
-    def get_next_dev_batch(self):
-        """
-        :return: next batch of the data as a dictionary that feeds method Session.run
+        :return: a generator of next batches of the training data that are accumulated
+            as a dictionary that feeds method Session.run
         """
         pass
 
@@ -58,23 +46,16 @@ class AllData(Data):
         self.train_target = train_target
         self.test_input = test_input
         self.test_target = test_target
-        self.counter = False
 
     def set_placeholders(self, pl_list):
         self.ph_x = pl_list[0]
         self.ph_y = pl_list[1]
 
-    def get_next_batch(self):
-        return {self.ph_x: self.train_input, self.ph_y: self.train_target}
+    def get_batches(self):
+        yield {self.ph_x: self.train_input, self.ph_y: self.train_target}
 
-    def accumulate_grad(self):
-        return False
-
-    def accumulate_dev(self):
-        return False
-
-    def get_next_dev_batch(self):
-        return {self.ph_x: self.test_input, self.ph_y: self.test_target}
+    def get_dev_batches(self):
+        yield {self.ph_x: self.test_input, self.ph_y: self.test_target}
 
     def train_ended(self):
         pass
@@ -92,8 +73,6 @@ class BatchedData(Data):
         self.test_input = test_input
         self.test_target = test_target
         self.batch_size = batch_size
-        self.batch_num = math.ceil(train_input.shape[0] / batch_size)
-        self.counter = 0
         self.start_index = 0
         self.end_index = batch_size - 1
 
@@ -101,7 +80,7 @@ class BatchedData(Data):
         self.ph_x = pl_list[0]
         self.ph_y = pl_list[1]
 
-    def get_next_batch(self):
+    def get_batches(self):
         feet_dict = {
             self.ph_x: self.train_input[self.start_index:self.end_index],
             self.ph_y: self.train_target[self.start_index:self.end_index]}
@@ -114,22 +93,10 @@ class BatchedData(Data):
             else:
                 self.end_index += self.batch_size
             self.start_index += self.batch_size
-        return feet_dict
+        yield feet_dict
 
-    def accumulate_grad(self):
-        return False
-        self.counter += 1
-        if self.counter % self.batch_num == 0:
-            self.counter = 0
-            return False
-        else:
-            return True
-
-    def accumulate_dev(self):
-        return False
-
-    def get_next_dev_batch(self):
-        return {self.ph_x: self.test_input, self.ph_y: self.test_target}
+    def get_dev_batches(self):
+        yield {self.ph_x: self.test_input, self.ph_y: self.test_target}
 
     def train_ended(self):
         pass

@@ -18,6 +18,7 @@ def gtrain(
     out_dir=None,
     varbose_level=1,
     additional_summaries=True,
+    return_session=False,
     dtype=tf.float32):
     """
     gtrain implements general purpose training algorithm of the model on given data
@@ -40,7 +41,8 @@ def gtrain(
         2: evaluation and training steps measures are printed
     :param additional_summaries: a flag that defines if the additional summaries are stored
         such summaries are histograms and sparsity of the trainable variables
-    :return:
+    :param return_session: if True then gtrain returns session with build and trained model
+        otherwise resets default graph (tf.reset_default_graph()) after at the end of the function
     """
 
     if not issubclass(type(model), Model):
@@ -139,11 +141,8 @@ def gtrain(
             def train_step():
                 # acumulate gradients and
                 sum_size = 0
-                while True:
-                    feed_dict = data.get_next_batch()
+                for feed_dict in data.get_batches():
                     sess.run(accum_ops, feed_dict)
-                    if not data.accumulate_grad():
-                        break
 
                 _, step, summaries, loss,  hits, count = sess.run(
                     [train_op,  global_step, train_summary_op, accum_loss, accum_hits, accum_count], feed_dict)
@@ -157,11 +156,8 @@ def gtrain(
 
 
             def dev_step(writer=None):
-                while True:
-                    feed_dict = data.get_next_dev_batch()
+                for feed_dict in data.get_dev_batches():
                     sess.run(accum_dev_ops, feed_dict)
-                    if not data.accumulate_dev():
-                        break
                 # Evaluates model on a dev set
                 step, summaries, loss, hits, count = sess.run(
                     [global_step, dev_summary_op, accum_loss, accum_hits, accum_count], feed_dict)
@@ -199,6 +195,10 @@ def gtrain(
                     print("Saved model checkpoint to {}\n".format(path))
                 dev_summary_writer.close()
                 train_summary_writer.close()
+    if return_session is None:
+        tf.reset_default_graph()
+    else:
+        return sess
 
 
 def strain(model, data, optimizer=tf.train.AdamOptimizer(), num_steps=100, session=None):
@@ -220,7 +220,9 @@ def strain(model, data, optimizer=tf.train.AdamOptimizer(), num_steps=100, sessi
     train_op = optimizer.minimize(model.get_loss())
     session.run(tf.variables_initializer(optimizer.variables()))
     for i in range(num_steps):
-        train_op.run(data.get_next_batch(), session=session)
+        for feed_dict in data.get_batches():
+            train_op.run(feed_dict, session=session)
+    data.train_ended()
     model.train_ended(session)
     return session
 

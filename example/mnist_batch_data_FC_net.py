@@ -30,8 +30,7 @@ batch_size = 32
 import numpy as np
 net = FCNet(layer_sizes)
 data = BatchedData(x_train, l_train, x_val, l_val, batch_size)
-gtrain(net, data, num_steps=10_000, evaluate_every=500, checkpoint_every=1000,
-       out_dir=out_dir, lr_dec=1.0, lr_inc=1.0, lr=.01)
+gtrain(net, data, num_steps=10_000, evaluate_every=500, checkpoint_every=1000, out_dir=out_dir)
 save_weights([net.trained_W, net.trained_b], "mnist_FCnet_weihts")
 
 # after that you can run command "tensorboard --logdir=runs/mnistFCnet" to run tensorboard and view it at localhost:6006

@@ -83,10 +83,15 @@ def accuracy(y0, y1):
     :param y1: list of - labels or vector of probabilities
     :return: accuracy
     """
-    if not isinstance(y0[0], (int, float)) and len(y0.shape) > 1:
+    if not isinstance(y0[0], (int, float, np.int, np.int32, np.int64, np.float, np.float32, np.float64)):
         y0 = np.argmax(y0, axis=1)
-    if not isinstance(y1[0], (int, float)) and len(y0.shape) > 1:
+    elif isinstance(y0, list):
+        y0 = np.array(y0)
+    if not isinstance(y1[0], (int, float, np.int, np.int32, np.int64, np.float, np.float32, np.float64)):
         y1 = np.argmax(y1, axis=1)
+    elif isinstance(y1, list):
+        y1 = np.array(y1)
+
     out = np.sum(y0==y1)/len(y0)
     return out
 

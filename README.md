@@ -1,4 +1,4 @@
-#gtrain
+# gtrain
 
 **Before you start using this package, please, read a part of README with heading Usage**
 
@@ -12,7 +12,7 @@ For example, it can easily handle various input lengths witch is not common in o
 However, it is necessary to define model from scratch in TensorFlow framework. On the other hand, this process is inevitable when you want to use some uncommon architecture.
 
 
-##Usage
+## Usage
 
 Below, crucial concepts used by functions *gtrain* and *stran* are presented. Some of 
 
@@ -20,7 +20,7 @@ Model and Data describe methods of the classes that have to be overridden by the
 
 Finally, algorithm descriptions shows how the functions operate and use some of their parameters.
 
-###Model
+### Model
 
 **build()**  The method that creates model's representation in TensorFlow. It also stores some placeholders that are returned by other methods of the model.
 
@@ -40,7 +40,7 @@ Following methods are specific for the classification task, so in other cases, t
 
 If you are familiar with TensorFlow sumarries then functions **get_train_summaries()** and **get_dev_summaries** allow you to add summaries into the training and validation steps, respectively.
 
-###Data
+### Data
 
 **set_placeholders(placeholders_list)** It is called with an output from the method Model.get_placeholders() before training starts.
 
@@ -51,7 +51,7 @@ If you are familiar with TensorFlow sumarries then functions **get_train_summari
 **get_batches()** Similar to get_dev_batches but in the training stage.
 
 
-###*gtrain* - algorithm description
+### *gtrain* - algorithm description
 
 Below, a short description of the *gtrain* function is presented. The description aims to understanding of the synchronisation of the *gtrain* function and descendants of the Model and Data with respect to parameters *num_steps* and *evaluate_every*.  
 
@@ -81,7 +81,7 @@ The accumulating procedure helps with memory requirements for large datasets. In
 
 Please, be aware that parameter `num_steps` refers to the sum of application of optimizeri, i.e., how many times the weights are changed. So, if the data contains `batch_count` batches then training algorithm with `epoch` epochs has `num_steps = 100 * batch_count * epochs` and `evaluate_every = batch_count * epoch`.
 
-###*strain* - algorithm description
+### *strain* - algorithm description
 
 ~~~
 def strain(model, data, num_steps, session=None):
@@ -102,7 +102,7 @@ def strain(model, data, num_steps, session=None):
 ~~~
 
 
-##Examples
+## Examples
 
 There are implemented examples of the subclasses of Model:
 
@@ -122,8 +122,37 @@ Artificial dataset is used in the file **random_data_FC_net.py**. The gradient i
 
 The second example located in the file **mnist_batch_data_FC_net.py**. This example applies data with batches that have a size 32 and teh architecture of applied NN is 784-30-20-10.
 
-##Module *utils*
+## Module *utils*
+
+The module *utils* presents some function that comes handy when applying trying procedure on classification task.
+Following list provide a short description of included functions for more informations see documentation.
+
+* get_loss_and_accuracy - retreave a loss and accuracy measures that were coomputed during the training and saved as a TensorFlow summary
+
+* confmat - computes confusion matrix of given two labels in either one-hot encoding representation or plain integer labels
+
+* accuracy - similar to confmat, but it computes accuracy.
+
+* labels2probabilities - transforms list of integer labels into one-hot encoding representation.
+
+* save_weights - saves list of numpy arrays
+
+* load_weights - loads list of numpy arrays saved by save_weights
+
+* check_dir - creates the whole directory path if not exists
+
+* join_weights_and_biases - joins two list of numpy arrays into one.
+
+* get_class_vs_others_indexes - generates indexes of given samples that contains samples with the same numbers from given class and all the others.
 
 
-##Module *statutils*
+## Module *statutils*
 
+Rigorous statistical comparison of classifiers is complex task, because if more than two classifiers are present, more than one hypothesis is tested at the same time.
+Procedure of performance of statistical tests is described in an article with name "Statistical comparisons of classifiers over multiple data sets" published by Janez Demšar in 2006. Function *compere_classifiers* copies the process describe in this article.
+
+WARNING: This module requires to imoprt *scipy.stats*.
+
+**WARNING: Function *compere_classifiers* may require user input if it requires to find and input certain value in the statistical tables** 
+
+Example for the usage of the function is presented in file *compere_classifiers.py* in example directory of the repository.

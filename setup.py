@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='gtrain',
-    version='0.3.0',
+    version='0.4.0',
     description='Abstraction for general models in TensorFlow with implemented train function',
     long_description=long_description,
     long_description_content_type="text/markdown",

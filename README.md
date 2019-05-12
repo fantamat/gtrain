@@ -127,23 +127,23 @@ The second example located in the file **mnist_batch_data_FC_net.py**. This exam
 The module *utils* presents some function that comes handy when applying trying procedure on classification task.
 Following list provide a short description of included functions for more informations see documentation.
 
-* get_loss_and_accuracy - retreave a loss and accuracy measures that were coomputed during the training and saved as a TensorFlow summary
+* **get_loss_and_accuracy** - retreave a loss and accuracy measures that were coomputed during the training and saved as a TensorFlow summary
 
-* confmat - computes confusion matrix of given two labels in either one-hot encoding representation or plain integer labels
+* **confmat** - computes confusion matrix of given two labels in either one-hot encoding representation or plain integer labels
 
-* accuracy - similar to confmat, but it computes accuracy.
+* **accuracy** - similar to confmat, but it computes accuracy.
 
-* labels2probabilities - transforms list of integer labels into one-hot encoding representation.
+* **labels2probabilities** - transforms list of integer labels into one-hot encoding representation.
 
-* save_weights - saves list of numpy arrays
+* **save_weights** - saves list of numpy arrays
 
-* load_weights - loads list of numpy arrays saved by save_weights
+* **load_weights** - loads list of numpy arrays saved by save_weights
 
-* check_dir - creates the whole directory path if not exists
+* **check_dir** - creates the whole directory path if not exists
 
-* join_weights_and_biases - joins two list of numpy arrays into one.
+* **join_weights_and_biases** - joins two list of numpy arrays into one.
 
-* get_class_vs_others_indexes - generates indexes of given samples that contains samples with the same numbers from given class and all the others.
+* **get_class_vs_others_indexes** - generates indexes of given samples that contains samples with the same numbers from given class and all the others.
 
 
 ## Module *statutils*

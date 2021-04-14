@@ -197,7 +197,8 @@ def gtrain(
                 path = saver.save(sess, checkpoint_prefix, global_step=i)
                 if varbose_level > 0:
                     print("Saved model checkpoint to {}\n".format(path))
-                dev_summary_writer.close()
+                if dev_summary_writer:
+                    dev_summary_writer.close()
                 train_summary_writer.close()
     if return_session is None:
         tf.reset_default_graph()

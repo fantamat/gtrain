@@ -1,10 +1,10 @@
 import tensorflow as tf
 import os
-import time
 import datetime
 
 from gtrain.data import Data
 from gtrain.model import Model
+
 
 def gtrain(
     model,
@@ -18,6 +18,7 @@ def gtrain(
     out_dir=None,
     varbose_level=1,
     additional_summaries=True,
+    step_summaries=True,
     return_session=False,
     dtype=tf.float32):
     """
@@ -120,7 +121,10 @@ def gtrain(
                     acc_summary,
                     model.get_dev_summaries()])
                 dev_summary_dir = os.path.join(out_dir, "summaries", "dev")
-                dev_summary_writer = tf.summary.FileWriter(dev_summary_dir, sess.graph)
+                if step_summaries:
+                    dev_summary_writer = tf.summary.FileWriter(dev_summary_dir, sess.graph)
+                else:
+                    dev_summary_writer = None
 
                 # Checkpoint directory. Tensorflow assumes this directory already exists so we need to create it
                 checkpoint_dir = os.path.abspath(os.path.join(out_dir, "checkpoints"))

@@ -108,7 +108,7 @@ class FCNet(Model):
             with tf.name_scope("Loss"):
                 if self.cross_entropy:
                     if self.class_weights is not None:
-                        class_weights = tf.constant(tf.cast(self.class_weights, dtype=tf.float32))
+                        class_weights = tf.constant(self.class_weights, dtype=tf.float32)
                         logits = tf.multiply(y, class_weights)
                     else:
                         logits = y

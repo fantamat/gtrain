@@ -110,7 +110,7 @@ class FCNet(Model):
                     if self.class_weights is not None:
                         class_weights = tf.constant(self.class_weights, dtype=tf.float32)
                         self.loss = tf.reduce_mean(
-                            tf.losses.softmax_cross_entropy(logits=y, onehot_labels=self.t, weights=tf.multiply(self.t, class_weights)))
+                            tf.losses.softmax_cross_entropy(logits=y, onehot_labels=self.t, weights=tf.tensordot(self.t, class_weights, 1)))
                     else:
                         self.loss = tf.reduce_mean(
                             tf.losses.softmax_cross_entropy(logits=y, onehot_labels=self.t))
